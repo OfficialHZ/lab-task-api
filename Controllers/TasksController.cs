@@ -23,6 +23,8 @@ public class TasksController : ControllerBase
         }
     };
 
+    private static int nextId = 3;
+
     [HttpGet]
     public IActionResult GetTasks()
     {
@@ -45,9 +47,27 @@ public class TasksController : ControllerBase
     [HttpPost]
     public IActionResult CreateTask(TaskItem task)
     {
+        task.Id = nextId++;
+
         tasks.Add(task);
 
-        return Created("", task);
+        return Created($"/tasks/{task.Id}", task);
+    }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateTask(int id, TaskItem updatedTask)
+    {
+        var task = tasks.FirstOrDefault(t => t.Id == id);
+
+        if (task == null)
+        {
+            return NotFound();
+        }
+
+        task.Title = updatedTask.Title;
+        task.IsCompleted = updatedTask.IsCompleted;
+
+        return Ok(task);
     }
 
     [HttpDelete("{id}")]
@@ -64,20 +84,4 @@ public class TasksController : ControllerBase
 
         return NoContent();
     }
-
-    [HttpPut("{id}")]
-        public IActionResult UpdateTask(int id, TaskItem updatedTask)
-        {
-            var task = tasks.FirstOrDefault(t => t.Id == id);
-
-            if (task == null)
-            {
-                return NotFound();
-            }
-
-            task.Title = updatedTask.Title;
-            task.IsCompleted = updatedTask.IsCompleted;
-
-            return Ok(task);
-}
 }
