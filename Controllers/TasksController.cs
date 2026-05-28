@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using lab_task_api.Models;
+using lab_task_api.Services;
 
 namespace lab_task_api.Controllers;
 
@@ -7,34 +8,23 @@ namespace lab_task_api.Controllers;
 [Route("tasks")]
 public class TasksController : ControllerBase
 {
-    private static List<TaskItem> tasks = new()
-    {
-        new TaskItem
-        {
-            Id = 1,
-            Title = "Learn ASP.NET Core",
-            IsCompleted = false
-        },
-        new TaskItem
-        {
-            Id = 2,
-            Title = "Build first API",
-            IsCompleted = true
-        }
-    };
+    private readonly TaskService _taskService;
 
-    private static int nextId = 3;
+    public TasksController(TaskService taskService)
+    {
+        _taskService = taskService;
+    }
 
     [HttpGet]
     public IActionResult GetTasks()
     {
-        return Ok(tasks);
+        return Ok(_taskService.GetAll());
     }
 
     [HttpGet("{id}")]
     public IActionResult GetTaskById(int id)
     {
-        var task = tasks.FirstOrDefault(t => t.Id == id);
+        var task = _taskService.GetById(id);
 
         if (task == null)
         {
@@ -47,25 +37,20 @@ public class TasksController : ControllerBase
     [HttpPost]
     public IActionResult CreateTask(TaskItem task)
     {
-        task.Id = nextId++;
+        var createdTask = _taskService.Create(task);
 
-        tasks.Add(task);
-
-        return Created($"/tasks/{task.Id}", task);
+        return Created($"/tasks/{createdTask.Id}", createdTask);
     }
 
     [HttpPut("{id}")]
     public IActionResult UpdateTask(int id, TaskItem updatedTask)
     {
-        var task = tasks.FirstOrDefault(t => t.Id == id);
+        var task = _taskService.Update(id, updatedTask);
 
         if (task == null)
         {
             return NotFound();
         }
-
-        task.Title = updatedTask.Title;
-        task.IsCompleted = updatedTask.IsCompleted;
 
         return Ok(task);
     }
@@ -73,14 +58,12 @@ public class TasksController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteTask(int id)
     {
-        var task = tasks.FirstOrDefault(t => t.Id == id);
+        var deleted = _taskService.Delete(id);
 
-        if (task == null)
+        if (!deleted)
         {
             return NotFound();
         }
-
-        tasks.Remove(task);
 
         return NoContent();
     }
