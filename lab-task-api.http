@@ -1,0 +1,6 @@
+@lab_task_api_HostAddress = http://localhost:5224
+
+GET {{lab_task_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

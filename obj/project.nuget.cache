@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "MplVQ9x3Igg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\minim\\OneDrive\\Documents\\Code\\lab-task-api\\lab-task-api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\minim\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.8\\microsoft.aspnetcore.openapi.10.0.8.nupkg.sha512",
+    "C:\\Users\\minim\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
